@@ -4,13 +4,14 @@ from utils import dias
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import threading
+import logging
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 def principal():
-
+    logging.info("Inicio")
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
 
     lineasF = []
@@ -97,7 +98,7 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios}
+                         "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
         #8B
         url = url+'ptrm=8B&prefix='+x
@@ -132,7 +133,7 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios}
+                         "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
         #3
         url = url+'ptrm=3&prefix='+x
@@ -167,9 +168,9 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios}
+                         "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
-
+    logging.info("Fin")
     with open('resultado.json', 'w') as f:
         json.dump(jsonArchivo, f)
 
