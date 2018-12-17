@@ -142,7 +142,6 @@ def mostrar():
 @app.route("/escribir")
 @cross_origin()
 def escribir():
-    logging.info("Escritura")
     threads = list()
     t = threading.Thread(target=principal)
     threads.append(t)
