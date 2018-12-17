@@ -47,7 +47,7 @@ def principal():
                 profesores.append(c['name'])
             compl = []
             for k in b['compl']:
-                coreq.append(k['nrc'])
+                compl.append(k['nrc'])
             horarios = []
             for d in b['schedules']:
                 edificio = d['building']
@@ -80,6 +80,9 @@ def principal():
             profesores = []
             for c in b['instructors']:
                 profesores.append(c)
+            compl = []
+            for k in b['compl']:
+                compl.append(k['nrc'])
             horarios = []
             for d in b['schedules']:
                 edificio = d['building']
@@ -97,6 +100,41 @@ def principal():
                          "profesores": profesores, "horarios": horarios}
             jsonArchivo["records"].append(jsonFinal)
         #8B
+        url = url+'ptrm=8B&prefix='+x
+        r = requests.get(url, headers=headers)
+        records = json.loads(r.text)['records']
+        for b in records:
+            depto = b['class']
+            curso = b['course']
+            creditos = b['credits']
+            tipo = b['cycle']
+            cupos = b['empty']
+            nrc = b['nrc']
+            title = b['title']
+            seccion = b['section']
+            profesores = []
+            for c in b['instructors']:
+                profesores.append(c)
+            compl = []
+            for k in b['compl']:
+                compl.append(k['nrc'])
+            horarios = []
+            for d in b['schedules']:
+                edificio = d['building']
+                salon = d['classroom']
+                fechaI = d['date_ini']
+                fechaF = d['date_fin']
+                horaI = d['time_ini']
+                horaF = d['time_fin']
+                diasH = dias(d['L'], d['M'], d['I'], d['J'], d['V'], d['S'])
+                jsonFin = {'edificio': edificio, 'salon': salon, 'fecha_inicio': fechaI,
+                           'fecha_fin': fechaF, 'hora_inicio': horaI, 'hora_fin': horaF, 'dias': diasH}
+                horarios.append(jsonFin)
+            jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
+                         "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
+                         "profesores": profesores, "horarios": horarios}
+            jsonArchivo["records"].append(jsonFinal)
+        #3
         url = url+'ptrm=3&prefix='+x
         r = requests.get(url, headers=headers)
         records = json.loads(r.text)['records']
@@ -112,6 +150,9 @@ def principal():
             profesores = []
             for c in b['instructors']:
                 profesores.append(c)
+            compl = []
+            for k in b['compl']:
+                compl.append(k['nrc'])
             horarios = []
             for d in b['schedules']:
                 edificio = d['building']
