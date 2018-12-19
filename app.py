@@ -215,14 +215,14 @@ def principal():
             jsonArchivo["records"].append(jsonFinal)
     logging.info("Fin")
     with open('resultado.json', 'w') as f:
-        json.dump(jsonArchivo, f)
+        json.dump(jsonArchivo, f, ensure_ascii=False)
 
 @app.route("/")
 @cross_origin()
 def mostrar():
     with open('resultado.json', 'r') as theFile:
         data = theFile.read()
-        return str(data).replace("\'", " ")
+        return data.encode("latin1")
 
 @app.route("/escribir")
 @cross_origin()
