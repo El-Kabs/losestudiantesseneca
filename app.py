@@ -220,7 +220,7 @@ def principal():
 @app.route("/")
 @cross_origin()
 def mostrar():
-    with open('resultado.json', 'r') as theFile:
+    with open('resultado.json', 'r', encoding='utf-8') as theFile:
         data = theFile.read()
         return str(data).replace("\'", " ")
 
