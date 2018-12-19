@@ -10,6 +10,8 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+logging.getLogger().setLevel(logging.INFO)
+
 def principal():
     logging.info("Inicio")
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
@@ -30,7 +32,9 @@ def principal():
 
     jsonArchivo = {"records": []}
     for x in prefijos:
+        logging.info(x)
         #16 Semanas
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=1&prefix='+x
         r = requests.get(url, headers=headers)
         records = json.loads(r.text)['records']
@@ -66,6 +70,8 @@ def principal():
                          "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
         #8A
+        logging.info("8A")
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=8A&prefix='+x
         r = requests.get(url, headers=headers)
         records = json.loads(r.text)['records']
@@ -101,6 +107,8 @@ def principal():
                          "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
         #8B
+        logging.info("8B")
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=8B&prefix='+x
         r = requests.get(url, headers=headers)
         records = json.loads(r.text)['records']
@@ -136,8 +144,11 @@ def principal():
                          "profesores": profesores, "horarios": horarios, "compl": compl}
             jsonArchivo["records"].append(jsonFinal)
         #3
+        logging.info("8A")
         url = url+'ptrm=3&prefix='+x
+        logging.info(url)
         r = requests.get(url, headers=headers)
+        logging.info(r.text)
         records = json.loads(r.text)['records']
         for b in records:
             depto = b['class']
@@ -184,6 +195,7 @@ def mostrar():
 @app.route("/escribir")
 @cross_origin()
 def escribir():
+    logging.info("Antes")
     threads = list()
     t = threading.Thread(target=principal)
     threads.append(t)
@@ -191,4 +203,4 @@ def escribir():
     return ("OK")
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)
