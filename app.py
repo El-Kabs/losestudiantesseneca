@@ -48,6 +48,13 @@ def principal():
             title = b['title']
             seccion = b['section']
             profesores = []
+            coreq = []
+            for n in b['coreq']:
+                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+                coreq.append(core)
+            prereq = []
+            for z in b['prereq']:
+                prereq.append(z['code'])
             for c in b['instructors']:
                 profesores.append(c['name'])
             compl = []
@@ -67,7 +74,8 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl}
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
         #8A
         logging.info("8A")
@@ -85,8 +93,15 @@ def principal():
             title = b['title']
             seccion = b['section']
             profesores = []
+            coreq = []
+            for n in b['coreq']:
+                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+                coreq.append(core)
+            prereq = []
+            for z in b['prereq']:
+                prereq.append(z['code'])
             for c in b['instructors']:
-                profesores.append(c)
+                profesores.append(c['name'])
             compl = []
             for k in b['compl']:
                 compl.append(k['nrc'])
@@ -104,7 +119,8 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl}
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
         #8B
         logging.info("8B")
@@ -122,8 +138,15 @@ def principal():
             title = b['title']
             seccion = b['section']
             profesores = []
+            coreq = []
+            for n in b['coreq']:
+                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+                coreq.append(core)
+            prereq = []
+            for z in b['prereq']:
+                prereq.append(z['code'])
             for c in b['instructors']:
-                profesores.append(c)
+                profesores.append(c['name'])
             compl = []
             for k in b['compl']:
                 compl.append(k['nrc'])
@@ -141,7 +164,8 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl}
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
         #3
         logging.info("8A")
@@ -160,8 +184,15 @@ def principal():
             title = b['title']
             seccion = b['section']
             profesores = []
+            coreq = []
+            for n in b['coreq']:
+                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+                coreq.append(core)
+            prereq = []
+            for z in b['prereq']:
+                prereq.append(z['code'])
             for c in b['instructors']:
-                profesores.append(c)
+                profesores.append(c['name'])
             compl = []
             for k in b['compl']:
                 compl.append(k['nrc'])
@@ -179,7 +210,8 @@ def principal():
                 horarios.append(jsonFin)
             jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
                          "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl}
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
     logging.info("Fin")
     with open('resultado.json', 'w') as f:
