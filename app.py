@@ -222,7 +222,7 @@ def principal():
 def mostrar():
     with open('resultado.json', 'r') as theFile:
         data = theFile.read()
-        return data.encode("latin1").replace("\'", " \")
+        return data.encode("latin1").replace("\'", " ")
 
 @app.route("/escribir")
 @cross_origin()
