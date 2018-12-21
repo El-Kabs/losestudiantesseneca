@@ -250,7 +250,7 @@ def darNombreSlug(jsonCompleto, nombreUsuario):
     profes = nombresJson[1]
     retorno = 'No encontrado'
     for x in profes['options']:
-        nombrePr = str(x['nombre'])+' '+str(x['apellidos'])
+        nombrePr = str(x['apellidos'])+' '+str(x['nombre'])
         if(nombrePr.lower().startswith(nombreUsuario.lower())):
             retorno = {'slug': x['slug'], 'depto': x['departamento_slug']}
     return retorno
