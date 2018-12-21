@@ -5,6 +5,7 @@ from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import threading
 import logging
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -224,6 +225,36 @@ def mostrar():
         data = theFile.read()
         return str(data).replace("\'", " ")
 
+@app.route("/profesor")
+@cross_origin()
+def profesor():
+    retorno = ""
+    profe = request.args.get('profe')
+    url = 'https://api.losestudiantes.co/universidades/universidad-de-los-andes/administracion/buscar/'+str(profe)
+    r = requests.get(url)
+    slug = darNombreSlug(r.text, profe)
+    if(slug == 'No encontrado'):
+        retorno = "No encontrado"
+    else:
+        url = 'https://losestudiantes.co/universidad-de-los-andes/'+slug['depto']+'/profesores/'+slug['slug']
+        r = requests.get(url)
+        html = BeautifulSoup(r.text, "html.parser")
+        profesorPromedio = html.find(id="profesor_promedio").string
+        profesorNota = html.find(id="profesor_nota").string
+        profesorCantidad = html.find(id="profesor_cantidad").string
+        retorno = {"promedio": profesorPromedio, "nota": profesorNota, "cantidad": profesorCantidad}
+    return str(retorno)
+
+def darNombreSlug(jsonCompleto, nombreUsuario):
+    nombresJson = json.loads(jsonCompleto)
+    profes = nombresJson[1]
+    retorno = 'No encontrado'
+    for x in profes['options']:
+        nombrePr = str(x['nombre'])+' '+str(x['apellidos'])
+        if(nombrePr.lower().startswith(nombreUsuario.lower())):
+            retorno = {'slug': x['slug'], 'depto': x['departamento_slug']}
+    return retorno
+        
 @app.route("/escribir")
 @cross_origin()
 def escribir():
