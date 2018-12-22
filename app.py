@@ -171,7 +171,7 @@ def principal():
         #3
         logging.info("8A")
         url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
-        url = url+'ptrm=8B&prefix='+x
+        url = url+'ptrm=3&prefix='+x
         logging.info(url)
         r = requests.get(url, headers=headers)
         logging.info(r.text)
@@ -224,7 +224,7 @@ def principal():
 def mostrar():
     with open('resultado.json', 'r', encoding="latin-1") as theFile:
         data = theFile.read()
-        return str(data).replace("\'", " ")
+        return str(data).replace("\'", " ").encode('latin-1')
 
 @app.route("/profesor")
 @cross_origin()
