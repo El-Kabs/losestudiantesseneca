@@ -234,7 +234,7 @@ def profesor():
     r = requests.get(url)
     slug = darNombreSlug(r.text, profe)
     if(slug == 'No encontrado'):
-        retorno = {"promedio": "No encontrado", "nota": "No encontrado", "cantidad": "No encontrado"}
+        retorno = {"promedio": "No encontrado", "nota": "No encontrado", "cantidad": "No encontrado", "slug": "No encontrado"}
     else:
         url = 'https://losestudiantes.co/universidad-de-los-andes/'+slug['depto']+'/profesores/'+slug['slug']
         r = requests.get(url)
@@ -242,7 +242,7 @@ def profesor():
         profesorPromedio = html.find(id="profesor_promedio").string
         profesorNota = html.find(id="profesor_nota").string
         profesorCantidad = html.find(id="profesor_cantidad").string
-        retorno = {"promedio": profesorPromedio, "nota": profesorNota, "cantidad": profesorCantidad}
+        retorno = {"promedio": profesorPromedio, "nota": profesorNota, "cantidad": profesorCantidad, "depto": slug['depto'], "prof": slug['slug']}
     return str(retorno)
 
 def darNombreSlug(jsonCompleto, nombreUsuario):
