@@ -170,7 +170,8 @@ def principal():
             jsonArchivo["records"].append(jsonFinal)
         #3
         logging.info("8A")
-        url = url+'ptrm=3&prefix='+x
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = url+'ptrm=8B&prefix='+x
         logging.info(url)
         r = requests.get(url, headers=headers)
         logging.info(r.text)
