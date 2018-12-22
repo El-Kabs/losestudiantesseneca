@@ -234,7 +234,7 @@ def profesor():
     r = requests.get(url)
     slug = darNombreSlug(r.text, profe)
     if(slug == 'No encontrado'):
-        retorno = "No encontrado"
+        retorno = {"promedio": "No encontrado", "nota": "No encontrado", "cantidad": "No encontrado"}
     else:
         url = 'https://losestudiantes.co/universidad-de-los-andes/'+slug['depto']+'/profesores/'+slug['slug']
         r = requests.get(url)
