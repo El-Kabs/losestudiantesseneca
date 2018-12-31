@@ -307,7 +307,7 @@ def principal():
     time2 = time.time()
     print('Function took {:.3f} ms'.format((time2-time1)*1000.0))
     with open('resultado.json', 'w') as f:
-        json.dumps(jsonArchivo, f, ensure_ascii=False)
+        json.dump(jsonArchivo, f, ensure_ascii=False)
     jsonArchivo = {"records": []}
 
 @app.route("/")
@@ -315,7 +315,7 @@ def principal():
 def mostrar():
     with open('resultado.json', 'r', encoding="latin-1") as theFile:
         data = theFile.read()
-        return str(data).replace("\'", " ").encode('utf8')
+        return str(data).replace("\'", " ").encode('latin-1')
 
 def buscarEnFirebase(profe):
     app = firebase.FirebaseApplication('https://senecaio-8fe08.firebaseio.com/', None)
