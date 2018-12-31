@@ -4,6 +4,4 @@ flask_cors
 gunicorn
 bs4
 python-firebase
-datetime
-time
 
