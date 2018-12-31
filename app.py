@@ -303,7 +303,7 @@ def pensumapp():
     data = ""
     with open('materiasFinal.json', encoding='ISO-8859-1') as f:
         data = json.load(f)
-    return str(data)
+    return str(data).replace('\xa0', ' ')
 
 def darNombreSlug(jsonCompleto, nombreUsuario):
     nombresJson = json.loads(jsonCompleto)
