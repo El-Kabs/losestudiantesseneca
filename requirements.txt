@@ -3,3 +3,7 @@ requests==2.18.4
 flask_cors
 gunicorn
 bs4
+firebase
+datetime
+time
+
