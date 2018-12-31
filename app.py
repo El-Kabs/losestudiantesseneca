@@ -296,7 +296,14 @@ def profesor():
         return str(scrapEstudiantesReemplazar(profe))
     elif(result==2):
         return str(resultado['fetch'])
-        
+
+@app.route("/pensum")
+@cross_origin()
+def pensumapp():
+    data = ""
+    with open('materiasFinal.json') as f:
+        data = json.load(f)
+    return str(data)
 
 def darNombreSlug(jsonCompleto, nombreUsuario):
     nombresJson = json.loads(jsonCompleto)
