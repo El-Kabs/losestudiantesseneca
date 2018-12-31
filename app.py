@@ -6,6 +6,9 @@ from flask_cors import CORS, cross_origin
 import threading
 import logging
 from bs4 import BeautifulSoup
+from firebase import firebase
+from datetime import datetime, timedelta
+import time
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -226,11 +229,27 @@ def mostrar():
         data = theFile.read()
         return str(data).replace("\'", " ").encode('latin-1')
 
-@app.route("/profesor")
-@cross_origin()
-def profesor():
-    retorno = ""
-    profe = request.args.get('profe')
+def buscarEnFirebase(profe):
+    app = firebase.FirebaseApplication('https://senecaio-8fe08.firebaseio.com/', None)
+    buscar = '/profesores/'+str(profe)
+    result = app.get(buscar, None)
+    if(result==None):
+        return {'resultado': 0}
+    else:
+        timestamp = result['timestamp']
+        date = datetime.fromtimestamp(timestamp)
+        if(datetime.now() - date > timedelta(1)):
+            return {'resultado': 1}
+        else:
+            return {'resultado': 2, 'fetch': result}
+
+def guardar(profe, datos):
+    app = firebase.FirebaseApplication('https://senecaio-8fe08.firebaseio.com/', None)
+    datos['timestamp'] = time.time()
+    donde = '/profesores/'+str(profe)
+    result = app.patch(donde, datos)
+
+def scrapEstudiantes(profe):
     url = 'https://api.losestudiantes.co/universidades/universidad-de-los-andes/administracion/buscar/'+str(profe)
     r = requests.get(url)
     slug = darNombreSlug(r.text, profe)
@@ -244,7 +263,40 @@ def profesor():
         profesorNota = html.find(id="profesor_nota").string
         profesorCantidad = html.find(id="profesor_cantidad").string
         retorno = {"promedio": profesorPromedio, "nota": profesorNota, "cantidad": profesorCantidad, "depto": slug['depto'], "prof": slug['slug']}
+        guardar(profe, retorno)
     return str(retorno)
+
+def scrapEstudiantesReemplazar(profe):
+    url = 'https://api.losestudiantes.co/universidades/universidad-de-los-andes/administracion/buscar/'+str(profe)
+    r = requests.get(url)
+    slug = darNombreSlug(r.text, profe)
+    if(slug == 'No encontrado'):
+        retorno = {"promedio": "No encontrado", "nota": "No encontrado", "cantidad": "No encontrado", "slug": "No encontrado"}
+    else:
+        url = 'https://losestudiantes.co/universidad-de-los-andes/'+slug['depto']+'/profesores/'+slug['slug']
+        r = requests.get(url)
+        html = BeautifulSoup(r.text, "html.parser")
+        profesorPromedio = html.find(id="profesor_promedio").string
+        profesorNota = html.find(id="profesor_nota").string
+        profesorCantidad = html.find(id="profesor_cantidad").string
+        retorno = {"promedio": profesorPromedio, "nota": profesorNota, "cantidad": profesorCantidad, "depto": slug['depto'], "prof": slug['slug']}
+        guardar(profe, retorno)
+    return str(retorno)
+    
+@app.route("/profesor")
+@cross_origin()
+def profesor():
+    retorno = ""
+    profe = request.args.get('profe')
+    resultado = buscarEnFirebase(profe)
+    result = resultado['resultado']
+    if(result==0):
+        return str(scrapEstudiantes(profe))
+    elif(result==1):
+        return str(scrapEstudiantesReemplazar(profe))
+    elif(result==2):
+        return str(resultado['fetch'])
+        
 
 def darNombreSlug(jsonCompleto, nombreUsuario):
     nombresJson = json.loads(jsonCompleto)
