@@ -315,7 +315,7 @@ def principal():
 def mostrar():
     with open('resultado.json', 'r', encoding="latin-1") as theFile:
         data = theFile.read()
-        return str(data).replace("\'", " ").encode('latin-1')
+        return str(data).replace("\'", " ")
 
 def buscarEnFirebase(profe):
     app = firebase.FirebaseApplication('https://senecaio-8fe08.firebaseio.com/', None)
