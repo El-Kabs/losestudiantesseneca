@@ -308,7 +308,7 @@ def principal():
     logging.info("Fin")
     time2 = time.time()
     print('Function took {:.3f} ms'.format((time2-time1)*1000.0))
-    with open('resultado.json', 'w') as f:
+    with codecs.open('resultado.json', 'w', encoding="latin-1") as f:
         json.dump(jsonArchivo, f, ensure_ascii=False)
     jsonArchivo = {"records": []}
 
