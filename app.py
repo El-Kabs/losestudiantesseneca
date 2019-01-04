@@ -1,3 +1,4 @@
+# coding: latin1
 import requests
 import json
 from utils import dias
@@ -9,6 +10,7 @@ from bs4 import BeautifulSoup
 from firebase import firebase
 from datetime import datetime, timedelta
 import time
+import codecs
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -313,9 +315,11 @@ def principal():
 @app.route("/")
 @cross_origin()
 def mostrar():
-    with open('resultado.json', 'r', encoding="latin-1") as theFile:
-        data = theFile.read()
-        return str(data).replace("\'", " ")
+    f = codecs.open('resultado.json', 'r', encoding="latin-1")
+    return str(f.read()).replace("\'", " ")
+    #with open('resultado.json', 'r', encoding="latin-1") as theFile:
+    #    data = theFile.read()
+    #    return str(data).replace("\'", " ")
 
 def buscarEnFirebase(profe):
     app = firebase.FirebaseApplication('https://senecaio-8fe08.firebaseio.com/', None)
