@@ -282,8 +282,115 @@ def completo():
                          "profesores": profesores, "horarios": horarios, "compl": compl,
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
-    
 
+def decidirDia(dia):
+    if(dia=='Lunes'):
+        return "L"
+    if(dia=='Martes'):
+        return "M"
+    if(dia=='Miércoles'):
+        return "I"
+    if(dia=='Jueves'):
+        return "J"
+    if(dia=='Viernes'):
+        return "V"
+    if(dia=='Sábado'):
+        return "S"
+
+def deportes():
+    logging.info("Deportes")
+    global jsonArchivo
+    url = 'https://decanaturadeestudiantes.uniandes.edu.co/index.php/es/cursos'
+    r = requests.get(url)
+    html = BeautifulSoup(r.text, "html.parser")
+    table = html.find('table')
+    td = table.find('td')
+    tbody = td.find('tbody')
+    tdd = tbody.findAll('td', style="text-align: center;")
+    i = 0
+    depto = "DEPO"
+    curso = "99"+str(i)
+    creditos = "1"
+    tipo = "1"
+    cupos = "99"
+    nrc = ""
+    title = ""
+    seccion = str(i)
+    profesores = ""
+    horarios = ""
+    compl = []
+    coreq = []
+    prereq = []
+    edificio = ""
+    salon = ""
+    hora_inicio = ""
+    hora_fin = ""
+    fecha_inicio = "21-JAN-19"
+    fecha_fin = "11-MAY-19"
+    dias = ""
+    for x in tdd:
+        if(i%7==0):
+            depto = "DEPO"
+            curso = "99"+str(i)
+            creditos = "1"
+            tipo = "1"
+            cupos = "99"
+            nrc = ""
+            title = ""
+            seccion = str(i)
+            profesores = ""
+            horarios = ""
+            compl = []
+            coreq = []
+            prereq = []
+            edificio = ""
+            salon = ""
+            hora_inicio = ""
+            hora_fin = ""
+            fecha_inicio = "21-JAN-19"
+            fecha_fin = "11-MAY-19"
+            dias = ""
+            nrc = x.string
+        elif(i%7==1):
+            title = x.string
+        elif(i%7==2):
+            if(len(x.string)==3):
+                hora_inicio = "0"+x.string
+            else:
+                hora_inicio = x.string
+        elif(i%7==3):
+            hora = x.string.split(" (hs)")[0].rstrip()
+            if(len(hora)==3):
+                hora_fin = "0"+hora
+            else:
+                hora_fin = hora
+        elif(i%7==4):
+            if(x.string.startswith("GA")):
+                edificio = x.string.split("_")[0]
+                salon = x.string.split("_")[1]
+            else:
+                edificio = x.string
+                salon = ""
+        elif(i%7==5):
+            dia = decidirDia(x.string)
+            dias = []
+            dias.append(dia)
+            horarios = []
+            horari = {"edificio": edificio, "salon": salon, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin,
+                      "hora_inicio": hora_inicio, "hora_fin": hora_fin, "dias": dias}
+            horarios.append(horari)
+        elif(i%7==6):
+            profesores = []
+            profesores.append(x.string)
+            jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
+                         "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
+            logging.info(jsonFinal)
+            jsonArchivo["records"].append(jsonFinal)
+        i = i + 1
+            
+            
 def principal():    
     global jsonArchivo
     time1 = time.time()
@@ -293,18 +400,22 @@ def principal():
     t2 = threading.Thread(target=OB)
     t3 = threading.Thread(target=tres)
     t4 = threading.Thread(target=completo)
+    t5 = threading.Thread(target=deportes)
     threads.append(t1)
     threads.append(t2)
     threads.append(t3)
     threads.append(t4)
+    threads.append(t5)
     t1.start()
     t2.start()
     t3.start()
     t4.start()
+    t5.start()
     t1.join()
     t2.join()
     t3.join()
     t4.join()
+    t5.join()
     logging.info("Fin")
     time2 = time.time()
     print('Function took {:.3f} ms'.format((time2-time1)*1000.0))
