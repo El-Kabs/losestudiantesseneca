@@ -251,7 +251,6 @@ def completoParcial(prefijos):
         url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=f62515ff9b004a927d0e865ac54603d4&term=201910&'
         url = url+'ptrm=1&prefix='+x
         r = requests.get(url, headers=headers, cookies=cookies)
-        logging.info(r.text)
         records = json.loads(r.text)['records']
         for b in records:
             depto = b['class']
