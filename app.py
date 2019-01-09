@@ -20,8 +20,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 logging.getLogger().setLevel(logging.INFO)
 
 jsonArchivo = {"records": []}
-cookies = {'PHPSESSID': '72d5328f1a0d784ffc4120332bca9ba3'}
-token = '5dc566f330a2ca0775237bfb36645b14'
+cookies = {'PHPSESSID': '4ce2c39d145c4b6b556fb8f82782702f'}
+token = '6b34c99a1432c9bc073dbe75d2ba1860'
 def OA():
     logging.info("8A")
     global jsonArchivo
