@@ -97,8 +97,8 @@ def OA():
 def OB():
     logging.info("8B")
     global jsonArchivo
+    global cookies
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
 
     prefijos = []
@@ -167,8 +167,8 @@ def OB():
 def tres():
     logging.info("Tres")
     global jsonArchivo
+    global cookies
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
 
     prefijos = []
@@ -237,9 +237,9 @@ def tres():
 
 def completoParcial(prefijos):
     global jsonArchivo
+    global cookies
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     logging.info("Una mitad")
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
     #1
@@ -300,7 +300,7 @@ def completoParcial(prefijos):
 def completo():
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
+    global cookies
     lineasF = []
 
     prefijos = []
@@ -350,8 +350,8 @@ def decidirDia(dia):
 def deportes():
     logging.info("Deportes")
     global jsonArchivo
+    global cookies
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
     
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
