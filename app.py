@@ -21,7 +21,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 jsonArchivo = {"records": []}
 cookies = {'PHPSESSID': '4ce2c39d145c4b6b556fb8f82782702f'}
-token = '6b34c99a1432c9bc073dbe75d2ba1860'
+token = 'eafd0b6e15d48d5119b53fe6e551ecf3'
 def OA():
     logging.info("8A")
     global jsonArchivo
