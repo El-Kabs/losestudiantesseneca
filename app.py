@@ -45,7 +45,8 @@ def OA():
         url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=8A&prefix='+x
         r = requests.get(url, headers=headers)
-        records = json.loads(r.text)['records']
+        resp = r.text[3:]
+        records = json.loads(resp)['records']
         for b in records:
             depto = b['class']
             curso = b['course']
@@ -112,7 +113,7 @@ def OB():
         url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=8B&prefix='+x
         r = requests.get(url, headers=headers)
-        records = json.loads(r.text)['records']
+        records = json.loads(r.text[3:])['records']
         for b in records:
             depto = b['class']
             curso = b['course']
@@ -177,7 +178,7 @@ def tres():
         url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
         url = url+'ptrm=3&prefix='+x
         r = requests.get(url, headers=headers)
-        records = json.loads(r.text)['records']
+        records = json.loads(r.text[3:])['records']
         for b in records:
             depto = b['class']
             curso = b['course']
@@ -218,9 +219,63 @@ def tres():
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
 
-def completo():
+def completoParcial(prefijos):
     global jsonArchivo
-    logging.info("Completo")
+    time1 = time.time()
+    headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
+    logging.info("Una mitad")
+    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+    #1
+    for x in prefijos:
+        logging.info(x+"1")
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = url+'ptrm=1&prefix='+x
+        r = requests.get(url, headers=headers)
+        records = json.loads(r.text[3:])['records']
+        for b in records:
+            depto = b['class']
+            curso = b['course']
+            creditos = b['credits']
+            tipo = b['cycle']
+            cupos = b['empty']
+            nrc = b['nrc']
+            title = b['title']
+            seccion = b['section']
+            profesores = []
+            coreq = []
+            for n in b['coreq']:
+                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+                coreq.append(core)
+            prereq = []
+            for z in b['prereq']:
+                prereq.append(z['code'])
+            for c in b['instructors']:
+                profesores.append(c['name'])
+            compl = []
+            for k in b['compl']:
+                compl.append(k['nrc'])
+            horarios = []
+            for d in b['schedules']:
+                edificio = d['building']
+                salon = d['classroom']
+                fechaI = d['date_ini']
+                fechaF = d['date_fin']
+                horaI = d['time_ini']
+                horaF = d['time_fin']
+                diasH = dias(d['L'], d['M'], d['I'], d['J'], d['V'], d['S'])
+                jsonFin = {'edificio': edificio, 'salon': salon, 'fecha_inicio': fechaI,
+                           'fecha_fin': fechaF, 'hora_inicio': horaI, 'hora_fin': horaF, 'dias': diasH}
+                horarios.append(jsonFin)
+            jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
+                         "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
+                         "profesores": profesores, "horarios": horarios, "compl": compl,
+                         "coreq": coreq, "prereq": prereq}
+            jsonArchivo["records"].append(jsonFinal)
+    time2 = time.time()
+    print('Function Parcial Completo took {:.3f} ms'.format((time2-time1)*1000.0))
+
+def completo():
+    time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
 
     lineasF = []
@@ -234,54 +289,22 @@ def completo():
 
     for x in lineasF:
         prefijos.append(x)
-        
-    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
-    #1
-    for x in prefijos:
-        logging.info(x+"1")
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
-        url = url+'ptrm=1&prefix='+x
-        r = requests.get(url, headers=headers)
-        records = json.loads(r.text)['records']
-        for b in records:
-            depto = b['class']
-            curso = b['course']
-            creditos = b['credits']
-            tipo = b['cycle']
-            cupos = b['empty']
-            nrc = b['nrc']
-            title = b['title']
-            seccion = b['section']
-            profesores = []
-            coreq = []
-            for n in b['coreq']:
-                core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
-                coreq.append(core)
-            prereq = []
-            for z in b['prereq']:
-                prereq.append(z['code'])
-            for c in b['instructors']:
-                profesores.append(c['name'])
-            compl = []
-            for k in b['compl']:
-                compl.append(k['nrc'])
-            horarios = []
-            for d in b['schedules']:
-                edificio = d['building']
-                salon = d['classroom']
-                fechaI = d['date_ini']
-                fechaF = d['date_fin']
-                horaI = d['time_ini']
-                horaF = d['time_fin']
-                diasH = dias(d['L'], d['M'], d['I'], d['J'], d['V'], d['S'])
-                jsonFin = {'edificio': edificio, 'salon': salon, 'fecha_inicio': fechaI,
-                           'fecha_fin': fechaF, 'hora_inicio': horaI, 'hora_fin': horaF, 'dias': diasH}
-                horarios.append(jsonFin)
-            jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
-                         "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl,
-                         "coreq": coreq, "prereq": prereq}
-            jsonArchivo["records"].append(jsonFinal)
+
+    primeraMitad = prefijos[:len(prefijos)//2]
+    segundaMitad = prefijos[len(prefijos)//2:]
+
+    t1 = threading.Thread(target=completoParcial, args=(primeraMitad,))
+    t2 = threading.Thread(target=completoParcial, args=(segundaMitad,))
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+    
+    time2 = time.time()
+    
+    print('Function Completo took {:.3f} ms'.format((time2-time1)*1000.0))
 
 def decidirDia(dia):
     if(dia=='Lunes'):
@@ -300,95 +323,55 @@ def decidirDia(dia):
 def deportes():
     logging.info("Deportes")
     global jsonArchivo
-    url = 'https://decanaturadeestudiantes.uniandes.edu.co/index.php/es/cursos'
-    r = requests.get(url)
-    html = BeautifulSoup(r.text, "html.parser")
-    table = html.find('table')
-    td = table.find('td')
-    tbody = td.find('tbody')
-    tdd = tbody.findAll('td', style="text-align: center;")
-    i = 0
-    depto = "DEPO"
-    curso = "99"+str(i)
-    creditos = "1"
-    tipo = "1"
-    cupos = "99"
-    nrc = ""
-    title = ""
-    seccion = str(i)
-    profesores = ""
-    horarios = ""
-    compl = []
-    coreq = []
-    prereq = []
-    edificio = ""
-    salon = ""
-    hora_inicio = ""
-    hora_fin = ""
-    fecha_inicio = "21-JAN-19"
-    fecha_fin = "11-MAY-19"
-    dias = ""
-    for x in tdd:
-        if(i%7==0):
-            depto = "DEPO"
-            curso = "99"+str(i)
-            creditos = "1"
-            tipo = "1"
-            cupos = "99"
-            nrc = ""
-            title = ""
-            seccion = str(i)
-            profesores = ""
-            horarios = ""
-            compl = []
-            coreq = []
-            prereq = []
-            edificio = ""
-            salon = ""
-            hora_inicio = ""
-            hora_fin = ""
-            fecha_inicio = "21-JAN-19"
-            fecha_fin = "11-MAY-19"
-            dias = ""
-            nrc = x.string
-        elif(i%7==1):
-            title = x.string
-        elif(i%7==2):
-            if(len(x.string)==3):
-                hora_inicio = "0"+x.string
-            else:
-                hora_inicio = x.string
-        elif(i%7==3):
-            hora = x.string.split(" (hs)")[0].rstrip()
-            if(len(hora)==3):
-                hora_fin = "0"+hora
-            else:
-                hora_fin = hora
-        elif(i%7==4):
-            if(x.string.startswith("GA")):
-                edificio = x.string.split("_")[0]
-                salon = x.string.split("_")[1]
-            else:
-                edificio = x.string
-                salon = ""
-        elif(i%7==5):
-            dia = decidirDia(x.string)
-            dias = []
-            dias.append(dia)
-            horarios = []
-            horari = {"edificio": edificio, "salon": salon, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin,
-                      "hora_inicio": hora_inicio, "hora_fin": hora_fin, "dias": dias}
-            horarios.append(horari)
-        elif(i%7==6):
-            profesores = []
-            profesores.append(x.string)
-            jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
-                         "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
-                         "profesores": profesores, "horarios": horarios, "compl": compl,
-                         "coreq": coreq, "prereq": prereq}
-            logging.info(jsonFinal)
-            jsonArchivo["records"].append(jsonFinal)
-        i = i + 1
+    headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
+
+    lineasF = []
+        
+    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+    #1
+    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+    url = url+'ptrm=D&prefix=DEPO'
+    r = requests.get(url, headers=headers)
+    records = json.loads(r.text[3:])['records']
+    for b in records:
+        depto = b['class']
+        curso = b['course']
+        creditos = b['credits']
+        tipo = b['cycle']
+        cupos = b['empty']
+        nrc = b['nrc']
+        title = b['title']
+        seccion = b['section']
+        profesores = []
+        coreq = []
+        for n in b['coreq']:
+            core = {"subject": n['subject'], "number": n['number'], "title": n['title']}
+            coreq.append(core)
+        prereq = []
+        for z in b['prereq']:
+            prereq.append(z['code'])
+        for c in b['instructors']:
+            profesores.append(c['name'])
+        compl = []
+        for k in b['compl']:
+            compl.append(k['nrc'])
+        horarios = []
+        for d in b['schedules']:
+            edificio = d['building']
+            salon = d['classroom']
+            fechaI = d['date_ini']
+            fechaF = d['date_fin']
+            horaI = d['time_ini']
+            horaF = d['time_fin']
+            diasH = dias(d['L'], d['M'], d['I'], d['J'], d['V'], d['S'])
+            jsonFin = {'edificio': edificio, 'salon': salon, 'fecha_inicio': fechaI,
+                       'fecha_fin': fechaF, 'hora_inicio': horaI, 'hora_fin': horaF, 'dias': diasH}
+            horarios.append(jsonFin)
+        jsonFinal = {"depto": depto, "curso": curso, "creditos": creditos, "tipo": tipo,
+                     "cupos": cupos, "nrc": nrc, "title": title, "seccion": seccion,
+                     "profesores": profesores, "horarios": horarios, "compl": compl,
+                     "coreq": coreq, "prereq": prereq}
+        jsonArchivo["records"].append(jsonFinal)
             
             
 def principal():    
