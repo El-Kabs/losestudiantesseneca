@@ -11,6 +11,7 @@ from firebase import firebase
 from datetime import datetime, timedelta
 import time
 import codecs
+import uuid
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -23,7 +24,8 @@ jsonArchivo = {"records": []}
 def OA():
     logging.info("8A")
     global jsonArchivo
-    headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
+    
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
 
     lineasF = []
 
@@ -40,12 +42,16 @@ def OA():
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
 
     for x in prefijos:
+        uidx = str(uuid.uuid4())
+        head = 'https://registroapps.uniandes.edu.co/'+uidx
+        headers = {'Referer': head}
         logging.info(x+"8A")
         #16 Semanas
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?1f76d6492f1e1cbd95732a6b50e9b613&term=201910&'
         url = url+'ptrm=8A&prefix='+x
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, cookies=cookies)
         resp = r.text[3:]
+        logging.info(resp)
         records = json.loads(resp)['records']
         for b in records:
             depto = b['class']
@@ -86,13 +92,14 @@ def OA():
                          "profesores": profesores, "horarios": horarios, "compl": compl,
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
+        time.sleep(5)
     
 
 def OB():
     logging.info("8B")
     global jsonArchivo
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
 
     prefijos = []
@@ -109,10 +116,14 @@ def OB():
 
     for x in prefijos:
         logging.info(x+"8B")
+        uidx = str(uuid.uuid4())
+        head = 'https://registroapps.uniandes.edu.co/'+uidx
+        headers = {'Referer': head}
         #8B
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?1f76d6492f1e1cbd95732a6b50e9b613&term=201910&'
         url = url+'ptrm=8B&prefix='+x
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, cookies=cookies)
+        logging.info(r.text)
         records = json.loads(r.text[3:])['records']
         for b in records:
             depto = b['class']
@@ -153,12 +164,13 @@ def OB():
                          "profesores": profesores, "horarios": horarios, "compl": compl,
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
+        time.sleep(5)
 
 def tres():
     logging.info("Tres")
     global jsonArchivo
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
 
     prefijos = []
@@ -170,14 +182,20 @@ def tres():
 
     for x in lineasF:
         prefijos.append(x)
+
+    
         
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
     #3
     for x in prefijos:
         logging.info(x+"3")
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?1f76d6492f1e1cbd95732a6b50e9b613&term=201910&'
         url = url+'ptrm=3&prefix='+x
-        r = requests.get(url, headers=headers)
+        uidx = str(uuid.uuid4())
+        head = 'https://registroapps.uniandes.edu.co/'+uidx
+        headers = {'Referer': head}
+        r = requests.get(url, headers=headers, cookies=cookies)
+        logging.info(r.text)
         records = json.loads(r.text[3:])['records']
         for b in records:
             depto = b['class']
@@ -218,19 +236,25 @@ def tres():
                          "profesores": profesores, "horarios": horarios, "compl": compl,
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
+        time.sleep(5)
 
 def completoParcial(prefijos):
     global jsonArchivo
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     logging.info("Una mitad")
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
     #1
     for x in prefijos:
+        uidx = str(uuid.uuid4())
+        head = 'https://registroapps.uniandes.edu.co/'+uidx
+        headers = {'Referer': head}
         logging.info(x+"1")
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?1f76d6492f1e1cbd95732a6b50e9b613&term=201910&'
         url = url+'ptrm=1&prefix='+x
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, cookies=cookies)
+        logging.info(r.text)
         records = json.loads(r.text[3:])['records']
         for b in records:
             depto = b['class']
@@ -271,13 +295,14 @@ def completoParcial(prefijos):
                          "profesores": profesores, "horarios": horarios, "compl": compl,
                          "coreq": coreq, "prereq": prereq}
             jsonArchivo["records"].append(jsonFinal)
+        time.sleep(5)
     time2 = time.time()
     print('Function Parcial Completo took {:.3f} ms'.format((time2-time1)*1000.0))
 
 def completo():
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
 
     prefijos = []
@@ -290,6 +315,10 @@ def completo():
     for x in lineasF:
         prefijos.append(x)
 
+    uidx = str(uuid.uuid4())
+    head = 'https://registroapps.uniandes.edu.co/'+uidx
+    headers = {'Referer': head}
+        
     primeraMitad = prefijos[:len(prefijos)//2]
     segundaMitad = prefijos[len(prefijos)//2:]
 
@@ -324,14 +353,18 @@ def deportes():
     logging.info("Deportes")
     global jsonArchivo
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
-
+    cookies = {'PHPSESSID': '4aad3900e1b430911bff3100037b8498'}
     lineasF = []
-        
+    
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
     #1
-    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
+    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=1f76d6492f1e1cbd95732a6b50e9b613&term=201910&'
     url = url+'ptrm=D&prefix=DEPO'
-    r = requests.get(url, headers=headers)
+    uidx = str(uuid.uuid4())
+    head = 'https://registroapps.uniandes.edu.co/'+uidx
+    headers = {'Referer': head}
+    r = requests.get(url, headers=headers, cookies=cookies)
+    logging.info(r.text)
     records = json.loads(r.text[3:])['records']
     for b in records:
         depto = b['class']
