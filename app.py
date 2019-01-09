@@ -21,11 +21,12 @@ logging.getLogger().setLevel(logging.INFO)
 
 jsonArchivo = {"records": []}
 cookies = {'PHPSESSID': '72d5328f1a0d784ffc4120332bca9ba3'}
+token = '5dc566f330a2ca0775237bfb36645b14'
 def OA():
     logging.info("8A")
     global jsonArchivo
     global cookies
-    
+    global token
 
     lineasF = []
 
@@ -47,7 +48,7 @@ def OA():
         headers = {'Referer': head}
         logging.info(x+"8A")
         #16 Semanas
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=5dc566f330a2ca0775237bfb36645b14&term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token='+str(token)+'&term=201910&'
         url = url+'ptrm=8A&prefix='+x
         r = requests.get(url, headers=headers, cookies=cookies)
         resp = r.text
@@ -98,6 +99,7 @@ def OB():
     logging.info("8B")
     global jsonArchivo
     global cookies
+    global token
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
     lineasF = []
 
@@ -119,7 +121,7 @@ def OB():
         head = 'https://registroapps.uniandes.edu.co/'+uidx
         headers = {'Referer': head}
         #8B
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=5dc566f330a2ca0775237bfb36645b14&term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token='+str(token)+'&term=201910&'
         url = url+'ptrm=8B&prefix='+x
         r = requests.get(url, headers=headers, cookies=cookies)
         records = json.loads(r.text)['records']
@@ -168,6 +170,7 @@ def tres():
     logging.info("Tres")
     global jsonArchivo
     global cookies
+    global token
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
     lineasF = []
 
@@ -187,7 +190,7 @@ def tres():
     #3
     for x in prefijos:
         logging.info(x+"3")
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=5dc566f330a2ca0775237bfb36645b14&term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token='+str(token)+'&term=201910&'
         url = url+'ptrm=3&prefix='+x
         uidx = str(uuid.uuid4())
         head = 'https://registroapps.uniandes.edu.co/'+uidx
@@ -238,6 +241,7 @@ def tres():
 def completoParcial(prefijos):
     global jsonArchivo
     global cookies
+    global token
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
     logging.info("Una mitad")
@@ -248,7 +252,7 @@ def completoParcial(prefijos):
         head = 'https://registroapps.uniandes.edu.co/'+uidx
         headers = {'Referer': head}
         logging.info(x+"1")
-        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=5dc566f330a2ca0775237bfb36645b14&term=201910&'
+        url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token='+str(token)+'&term=201910&'
         url = url+'ptrm=1&prefix='+x
         r = requests.get(url, headers=headers, cookies=cookies)
         records = json.loads(r.text)['records']
@@ -300,6 +304,7 @@ def completo():
     time1 = time.time()
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
     global cookies
+    global token
     lineasF = []
 
     prefijos = []
@@ -350,12 +355,14 @@ def deportes():
     logging.info("Deportes")
     global jsonArchivo
     global cookies
+    global token
     headers = {'Referer': 'https://registroapps.uniandes.edu.co/oferta_cursos/home.php'}
     lineasF = []
-    
+    logging.info(token)
+    logging.info(cookies)
     url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?term=201910&'
     #1
-    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token=5dc566f330a2ca0775237bfb36645b14&term=201910&'
+    url = 'https://registroapps.uniandes.edu.co/oferta_cursos/api/get_courses.php?token='+str(token)+'&term=201910&'
     url = url+'ptrm=D&prefix=DEPO'
     uidx = str(uuid.uuid4())
     head = 'https://registroapps.uniandes.edu.co/'+uidx
@@ -509,6 +516,19 @@ def profesor():
         return str(scrapEstudiantesReemplazar(profe))
     elif(result==2):
         return str(resultado['fetch'])
+
+@app.route("/update")
+@cross_origin()
+def change():
+    global cookies
+    global token
+    retorno = ""
+    tokenValue = request.args.get('token')
+    cookieValue = request.args.get('cookie')
+    cookies = {'PHPSESSID': cookieValue}
+    token = tokenValue
+    retorno = "PHPSESSID Cambiado a: "+str(cookieValue)+" y token a: "+str(token)
+    return str(retorno)
 
 @app.route("/pensum")
 @cross_origin()
